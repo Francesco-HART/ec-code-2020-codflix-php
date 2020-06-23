@@ -83,6 +83,14 @@ CREATE TABLE `history`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = latin1;
 
+
+CREATE TABLE `series` (
+                          `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT ,
+                          `serie_id` int(11) NOT NULL,
+                          `saison` int(11) NOT NULL,
+                          `episode` int(11) NOT NULL,
+                          `name` varchar(254) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 -- --------------------------------------------------------
 
 --

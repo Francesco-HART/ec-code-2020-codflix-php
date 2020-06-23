@@ -1,16 +1,31 @@
-<?php ob_start(); ?>
+<?php
+ob_start();
+require './model/Tools.php';
+?>
 <div>
-    <?php foreach ($mediaInfos as $media): ?>
-        <div class="col-xs-12 col-md-6">
-            <div class="title"><?= $media['title']; ?> </div>
-            <div style="position: fixed; z-index: -99; width: 100%; height: 100%">
-                <iframe frameborder="0" height="100%" width="100%"
-                        src="<?= $media["trailer_url"]; ?>">
-                </iframe>
 
-            </div>
+    <?php
+    echo '<p>' . $_GET[0] . '</p>';
+    echo "<select name=episodes>";
+    foreach ($episodes as $episode => $value) {
+        echo "<option value='" . $value["saison"] . "'>" . $value["saison"] . "</option> ";
+    }
+    echo "</select>";
+
+    echo "<select name=episodes>";
+    foreach ($saisons as $saison => $value) {
+        echo "<option value='" . $value["saison"] . "'>" . $value["saison"] . "</option> ";
+    }
+    echo "</select>";
+    ?>
+    <div class="col-xs-12 col-md-6">
+        <div class="title"><?= $mediaInfos['title']; ?> </div>
+        <div style="position: fixed; z-index: -99; width: 100%; height: 100%">
+            <iframe frameborder="0" height="100%" width="100%"
+                    src="<?= $mediaInfos["trailer_url"]; ?>">
+            </iframe>
         </div>
-    <?php endforeach; ?>
+    </div>
 </div>
 
 

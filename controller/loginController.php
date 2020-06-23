@@ -33,7 +33,7 @@ function login($post)
     $data->email = $post['email'];
     $data->password = $post['password'];
 
-    if (strpos($post['password'], " ")) {
+    if (empty($post['email'])) {
         $error_msg = "Email ou mot de passe incorrect";
         $isConnect = false;
     }

@@ -119,11 +119,11 @@ class Media
     {
         // Open database connection
         $db = init_db();
-        $req = $db->prepare("SELECT * FROM media WHERE id = ".$id);
+        $req = $db->prepare("SELECT * FROM media WHERE id = " . $id);
         $req->execute();
         // Close databse connection
         $db = null;
-        return $req->fetchAll();
+        return $req->fetch();
     }
 
     public static function getMediaGenderById($id)
@@ -138,6 +138,45 @@ class Media
         $db = null;
 
         return $req->fetch();
+    }
+
+    public static function getSeries()
+    {
+        // Open database connection
+        $db = init_db();
+        $sql = "SELECT * FROM serie ";
+        $req = $db->prepare($sql);
+        $req->execute();
+
+        // Close database connection
+        $db = null;
+
+        return $req->fetch();
+    }
+
+    public static function getEpisodesBySaisonId($id, $saison)
+    {
+        // Open database connection
+        $db = init_db();
+        $sql = "SELECT * FROM series WHERE serie_id = " . $id . " AND saison = " . $saison;
+        $req = $db->prepare($sql);
+        $req->execute();
+
+        // Close database connection
+        $db = null;
+        return $req->fetchAll();
+    }
+
+    public static function getSaisonsByMediaId($id)
+    {
+// Open database connection
+        $db = init_db();
+        $req = $db->prepare("SELECT * FROM series WHERE serie_id = " . $id . " GROUP BY saison");
+        $req->execute();
+        // Close database connection
+        $db = null;
+
+        return $req->fetchAll();
     }
 }
 
