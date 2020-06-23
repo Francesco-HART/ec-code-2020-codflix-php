@@ -95,7 +95,7 @@ CREATE TABLE `user`
     `id`       int(11)      NOT NULL,
     `email`    varchar(254) NOT NULL,
     `password` varchar(80)  NOT NULL,
-    `isActive`   tinyint(1)   NOT NULL DEFAULT 0
+    `isActive` tinyint(1)   NOT NULL DEFAULT 0
 ) ENGINE = InnoDB
   DEFAULT CHARSET = latin1;
 
@@ -182,3 +182,9 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT = @OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS = @OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION = @OLD_COLLATION_CONNECTION */;
+
+
+
+INSERT INTO media (id, genre_id, title, type, status, release_date, summary, trailer_url)
+VALUES (NULL, '1', 'La belle histoiree', 'Film', 'Média publié', '2015-10-30',
+        'La jeune vie du nouveau grand coder de cette génération', 'https://www.youtube.com/watch?v=iW0B9NTId2g');

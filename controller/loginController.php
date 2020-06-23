@@ -29,7 +29,6 @@ function loginPage()
 function login($post)
 {
     $isConnect = true;
-
     $data = new stdClass();
     $data->email = $post['email'];
     $data->password = $post['password'];
@@ -38,7 +37,6 @@ function login($post)
         $error_msg = "Email ou mot de passe incorrect";
         $isConnect = false;
     }
-
 
 
     if ($isConnect) {

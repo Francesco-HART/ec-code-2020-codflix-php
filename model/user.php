@@ -56,6 +56,7 @@ class User
 
     public function setIsActive()
     {
+
         $this->isActive = true;
     }
 
@@ -161,8 +162,6 @@ class User
         $target = $this->email;
         $info = "Activation de votre compte";
         $header = "From: inscription@codflix.com";
-
-
         $msg = 'Codflix,
         For activer your compt, clic on the link  
         http://codflix/inscription/activation.php?log=' . $res['id'] . ' 
@@ -171,9 +170,10 @@ class User
         try {
             mail($target, $info, $msg, $header);
             $isSend = true;
+            return $isSend;
         } catch (Exception $e) {
             throw new Exception('Erreur du serveur l\'email de confirmation n\'a pas pu être envoyé');
         }
-        return $isSend;
+
     }
 }
