@@ -31,6 +31,11 @@ if ( isset( $_GET['action'] ) ):
       logout();
 
     break;
+      case 'media':
+
+          mediaPage();
+
+          break;
 
   endswitch;
 

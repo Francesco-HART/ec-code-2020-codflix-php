@@ -1,5 +1,6 @@
 <?php ob_start(); ?>
 
+
 <div class="landscape">
   <div class="bg-black">
     <div class="row no-gutters">
@@ -23,14 +24,13 @@
             <div class="form-group">
               <div class="row">
                 <div class="col-md-6">
-                  <input type="submit" name="Valider" class="btn btn-block bg-red" />
+                  <input type="submit" name="submit" class="btn btn-block bg-red" />
                 </div>
                 <div class="col-md-6">
                   <a href="index.php?action=signup" class="btn btn-block bg-blue">Inscription</a>
                 </div>
               </div>
             </div>
-
             <span class="error-msg">
               <?= isset( $error_msg ) ? $error_msg : null; ?>
             </span>

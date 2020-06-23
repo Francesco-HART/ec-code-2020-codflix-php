@@ -1,128 +1,179 @@
 <?php
 
-require_once( 'database.php' );
+require_once('database.php');
 
-class User {
+class User
+{
 
-  protected $id;
-  protected $email;
-  protected $password;
+    protected $id;
+    protected $email;
+    protected $password;
+    protected $isActive;
 
-  public function __construct( $user = null ) {
+    public function __construct($user = null)
+    {
+        $isActive = null;
+        if ($user != null):
+            $this->setId(isset($user->id) ? $user->id : null);
+            $this->setEmail($user->email);
+            $this->setPassword(isset($user->password) ? $user->password : false, isset($user->password_confirm) ? $user->password_confirm : false);
+        endif;
+    }
 
-    if( $user != null ):
-      $this->setId( isset( $user->id ) ? $user->id : null );
-      $this->setEmail( $user->email );
-      $this->setPassword( $user->password, isset( $user->password_confirm ) ? $user->password_confirm : false );
-    endif;
-  }
+    /***************************
+     * -------- SETTERS ---------
+     ***************************/
 
-  /***************************
-  * -------- SETTERS ---------
-  ***************************/
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
 
-  public function setId( $id ) {
-    $this->id = $id;
-  }
+    public function setEmail($email)
+    {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new Exception('Email incorrect');
+        }
+        $this->email = $email;
+    }
 
-  public function setEmail( $email ) {
+    public function setPassword($password, $password_confirm = false)
+    {
+        if (!$password) {
+            throw new Exception('Champ mot de passe manquant');
+        }
+        if (strpos($password, " ") != false) {
+            throw new Exception('Champ mot de passe ne doit pas contenir d\'éspaces');
+        }
+        if (!$password) {
+            throw new Exception('Champ mot de passe manquant');
+        }
+        if ($password_confirm && $password != $password_confirm) {
+            throw new Exception('Vos mots de passes sont différents');
+        }
+        $this->password = $password;
+    }
 
-    if ( !filter_var($email, FILTER_VALIDATE_EMAIL)):
-      throw new Exception( 'Email incorrect' );
-    endif;
+    public function setIsActive()
+    {
+        $this->isActive = true;
+    }
 
-    $this->email = $email;
+    /***************************
+     * -------- GETTERS ---------
+     ***************************/
 
-  }
+    public function getId()
+    {
+        return $this->id;
+    }
 
-  public function setPassword( $password, $password_confirm = false ) {
+    public function getEmail()
+    {
+        return $this->email;
+    }
 
-    if( $password_confirm && $password != $password_confirm ):
-      throw new Exception( 'Vos mots de passes sont différents' );
-    endif;
+    public function getPassword()
+    {
+        return $this->password;
+    }
 
-    $this->password = $password;
-  }
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
 
-  /***************************
-  * -------- GETTERS ---------
-  ***************************/
 
-  public function getId() {
-    return $this->id;
-  }
+    /***********************************
+     * -------- CREATE NEW USER ---------
+     ************************************/
 
-  public function getEmail() {
-    return $this->email;
-  }
+    public function createUser()
+    {
 
-  public function getPassword() {
-    return $this->password;
-  }
+        // Open database connection
+        $db = init_db();
 
-  /***********************************
-  * -------- CREATE NEW USER ---------
-  ************************************/
+        // Check if email already exist
+        $req = $db->prepare("SELECT * FROM user WHERE email = '" . $this->email . "'");
+        $req->execute();
+        if ($req->rowCount() > 0) throw new Exception("Email deja utilisé");
+        if ($this->email == '') {
+            throw new Exception("Email requis");
+        }
+        // Insert new user
+        $req->closeCursor();
+        $req = $db->prepare("INSERT INTO user ( email, password ) VALUES ( :email, :password )");
+        $req->execute(array(
+            'email' => $this->getEmail(),
+            'password' => $this->getPassword()
+        ));
 
-  public function createUser() {
+        if ($this->sendActivationMail()) {
+            throw new Exception('Erreur du serveur l\'email de confirmation n\'a pas pu être envoyé');
+        }
+        // Close databse connection
+        $db = null;
+    }
 
-    // Open database connection
-    $db   = init_db();
+    /**************************************
+     * -------- GET USER DATA BY ID --------
+     ***************************************/
 
-    // Check if email already exist
-    $req  = $db->prepare( "SELECT * FROM user WHERE email = ?" );
-    $req->execute( array( $this->getEmail() ) );
+    public static function getUserById($id)
+    {
 
-    if( $req->rowCount() > 0 ) throw new Exception( "Email ou mot de passe incorrect" );
+        // Open database connection
+        $db = init_db();
 
-    // Insert new user
-    $req->closeCursor();
+        $req = $db->prepare("SELECT * FROM user WHERE id = ?");
+        $req->execute(array($id));
 
-    $req  = $db->prepare( "INSERT INTO user ( email, password ) VALUES ( :email, :password )" );
-    $req->execute( array(
-      'email'     => $this->getEmail(),
-      'password'  => $this->getPassword()
-    ));
+        // Close databse connection
+        $db = null;
 
-    // Close databse connection
-    $db = null;
+        return $req->fetch();
+    }
 
-  }
+    /***************************************
+     * ------- GET USER DATA BY EMAIL -------
+     ****************************************/
 
-  /**************************************
-  * -------- GET USER DATA BY ID --------
-  ***************************************/
+    public function getUserByEmail()
+    {
+        // Open database connection
+        $db = init_db();
+        $req = $db->prepare("SELECT * FROM user WHERE email = ?");
+        $req->execute(array($this->getEmail()));
+        // Close databse connection
+        $db = null;
+        return $req->fetch();
+    }
 
-  public static function getUserById( $id ) {
+    /**
+     * @return bool true if email is send
+     */
+    private function sendActivationMail(): bool
+    {
 
-    // Open database connection
-    $db   = init_db();
+        $isSend = false;
+        $res = $this->getUserByEmail();
+        $target = $this->email;
+        $info = "Activation de votre compte";
+        $header = "From: inscription@codflix.com";
 
-    $req  = $db->prepare( "SELECT * FROM user WHERE id = ?" );
-    $req->execute( array( $id ));
 
-    // Close databse connection
-    $db   = null;
+        $msg = 'Codflix,
+        For activer your compt, clic on the link  
+        http://codflix/inscription/activation.php?log=' . $res['id'] . ' 
 
-    return $req->fetch();
-  }
-
-  /***************************************
-  * ------- GET USER DATA BY EMAIL -------
-  ****************************************/
-
-  public function getUserByEmail() {
-
-    // Open database connection
-    $db   = init_db();
-
-    $req  = $db->prepare( "SELECT * FROM user WHERE email = ?" );
-    $req->execute( array( $this->getEmail() ));
-
-    // Close databse connection
-    $db   = null;
-
-    return $req->fetch();
-  }
-
+        ---------------';
+        try {
+            mail($target, $info, $msg, $header);
+            $isSend = true;
+        } catch (Exception $e) {
+            throw new Exception('Erreur du serveur l\'email de confirmation n\'a pas pu être envoyé');
+        }
+        return $isSend;
+    }
 }
