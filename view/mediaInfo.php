@@ -63,9 +63,10 @@ require './model/Tools.php';
 
         }
         ?> </div>
-    <div style="position: fixed; z-index: -99; width: 100%; height: 100%">
-        <iframe frameborder="0" height="100%" width="100%"
-                src="<?= $mediaInfos["trailer_url"]; ?>">
+    <div>
+        <iframe loop controls muted frameborder="0" height="100%" width="100%"
+                src="<?=$mediaInfos['type'] ?$mediaInfos['trailer_url'] : $episode['url'] . "?autoplay=true"?>"
+                controls autoplay>
         </iframe>
     </div>
 </div>
