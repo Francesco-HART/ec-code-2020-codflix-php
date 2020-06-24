@@ -10,6 +10,8 @@ require_once('controller/loginController.php');
 require_once('controller/signupController.php');
 require_once('controller/mediaController.php');
 require_once('controller/historyController.php');
+require_once('controller/contactController.php');
+
 
 /**************************
  * ----- HANDLE ACTION -----
@@ -41,6 +43,9 @@ if (isset($_GET['action'])):
             break;
         case 'history':
             historyPage();
+            break;
+        case 'contact':
+            contactPage();
             break;
 
     endswitch;

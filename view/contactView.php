@@ -18,22 +18,13 @@
         <h2 class="title">Bienvenue</h2>
         <div class="sidebar-menu">
             <ul>
-
-                <li class=<?= (isset($_GET['action'])) && $_GET['action'] === "media" ? 'active' : '' ?>><a
-                            href="index.php?action=media">Médias</a>
-                </li>
-
-                <li class=<?= (isset($_GET['action'])) && $_GET['action'] === "contact" ? 'active' : '' ?>><a
-                            href="index.php?action=contact">
-                        Nous
-                        contacter</a></li>
-                <li class=<?= (isset($_GET['action'])) && $_GET['action'] === "history" ? 'active' : '' ?>><a
-                            href="index.php?action=history">Historique</a>
+                <li class=<?= (isset($_GET['action'])) && $_GET['action'] === "signup" ? 'active' : '' ?>><a
+                            href="index.php?action=signup">Inscription</a>
                 </li>
                 </li>
                 <li class=<?= (isset($_GET['action'])) && $_GET['action'] === "logout" ? 'active' : '' ?>><a
                             href="index.php?action=logout">Me
-                        déconnecter</a></li>
+                        connecter</a></li>
             </ul>
         </div>
     </nav>
@@ -60,6 +51,8 @@
 <script src="public/lib/bootstrap/js/bootstrap.min.js"></script>
 
 <script src="public/js/script.js"></script>
+
+
 </body>
 
 </html>

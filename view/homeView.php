@@ -12,8 +12,12 @@
                 </div>
             </div>
             <div class="row btn-container">
-                <div class="col-md-6"><a href="index.php?action=login" class="btn btn-block bg-red">Connexion</a></div>
-                <div class="col-md-6"><a href="index.php?action=signup" class="btn btn-block bg-blue">Inscription</a></div>
+                <div class=" col-xs-12 col-md-4"><a href="index.php?action=login"
+                                                    class="btn btn-block bg-red">Connexion</a></div>
+                <div class="col-xs-12 col-md-4"><a href="index.php?action=contact" class="btn btn-block bg-blue">Contactez
+                        Nous</a></div>
+                <div class="col-xs-12 col-md-4"><a href="index.php?action=signup" class="btn btn-block bg-blue">Inscription</a>
+                </div>
             </div>
         </div>
     </div>
