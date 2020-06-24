@@ -1,3 +1,8 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
 <?php
 
 require_once('controller/homeController.php');
@@ -5,6 +10,7 @@ require_once('controller/loginController.php');
 require_once('controller/signupController.php');
 require_once('controller/mediaController.php');
 require_once('controller/historyController.php');
+
 /**************************
  * ----- HANDLE ACTION -----
  ***************************/
@@ -50,3 +56,5 @@ else:
     endif;
 
 endif;
+?>
+<html>

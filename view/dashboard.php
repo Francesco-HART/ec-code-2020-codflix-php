@@ -18,12 +18,16 @@
         <h2 class="title">Bienvenue</h2>
         <div class="sidebar-menu">
             <ul>
-                <li class=<?= $_GET['action'] === "media" ? 'active' : '' ?>><a href="index.php?action=media">Médias</a>
+                <li class=<?= (isset($_GET['action'])) && $_GET['action'] === "media" ? 'active' : '' ?>><a
+                            href="index.php?action=media">Médias</a>
                 </li>
-                <li class=<?= $_GET['action'] === "contact" ? 'active' : '' ?>><a href="#">Nous contacter</a></li>
-                <li class=<?= $_GET['action'] === "history" ? 'active' : '' ?>><a href="index.php?action=history">Historique</a>
+                <li class=<?= (isset($_GET['action'])) && $_GET['action'] === "contact" ? 'active' : '' ?>><a href="#">Nous
+                        contacter</a></li>
+                <li class=<?= (isset($_GET['action'])) && $_GET['action'] === "history" ? 'active' : '' ?>><a
+                            href="index.php?action=history">Historique</a>
                 </li>
-                <li class=<?= $_GET['action'] === "logout" ? 'active' : '' ?>><a href="index.php?action=logout">Me
+                <li class=<?= (isset($_GET['action'])) && $_GET['action'] === "logout" ? 'active' : '' ?>><a
+                            href="index.php?action=logout">Me
                         déconnecter</a></li>
             </ul>
         </div>
