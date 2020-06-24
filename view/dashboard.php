@@ -20,6 +20,7 @@
           <ul>
             <li class="active"><a href="index.php?action=media">Médias</a></li>
             <li><a href="#">Nous contacter</a></li>
+            <li><a href="index.php?action=history">Historique</a></li>
             <li><a href="index.php?action=logout">Me déconnecter</a></li>
           </ul>
         </div>
