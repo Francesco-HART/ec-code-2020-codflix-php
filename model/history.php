@@ -83,22 +83,33 @@ class History
      * -------- GET LIST --------
      ***************************/
 
-    public static function getHistoryById($userId, $historyId): array
+    public static function getHistoryMediaById($userId): array
     {
         // Open database connection
         $db = init_db();
-        $req = $db->prepare("DELETE FROM `history` WHERE user_id = " . $userId . " AND id =" . $historyId);
+        $req = $db->prepare("DELETE FROM `history_media` WHERE user_id = " . $userId);
         $req->execute();
         // Close databse connection
         $db = null;
         return $req->fetchAll();
     }
 
-    public static function deleteHistory($userId)
+    public static function getHistoryEpisodeById($userId): array
+    {
+        // Open database connection
+        $db = init_db();
+        $req = $db->prepare("DELETE FROM `history_episode` WHERE user_id = " . $userId);
+        $req->execute();
+        // Close databse connection
+        $db = null;
+        return $req->fetchAll();
+    }
+
+    public static function deleteHistoryMedia($userId)
     {
 // Open database connection
         $db = init_db();
-        $req = $db->prepare("DELETE FROM `history` WHERE user_id = " . $userId);
+        $req = $db->prepare("DELETE FROM `history_media` WHERE user_id = " . $userId);
         $req->execute();
         // Close database connection
         $db = null;
@@ -106,15 +117,64 @@ class History
         return $req->fetchAll();
     }
 
-    public static function deleteOneHistory($userId, $historyId)
+    public static function deleteHistoryEpisode($userId)
     {
 // Open database connection
         $db = init_db();
-        $req = $db->prepare("SELECT * FROM series WHERE serie_id = " . $id . " GROUP BY saison");
+        $req = $db->prepare("DELETE FROM `history_episode` WHERE user_id = " . $userId);
         $req->execute();
         // Close database connection
         $db = null;
 
+        return $req->fetchAll();
+    }
+
+    public static function deleteOneHistoryMedia($id, $idMedia)
+    {
+// Open database connection
+        $db = init_db();
+        $req = $db->prepare("SELECT * FROM history_media WHERE id = " . $id . " WHERE id_media = " . $idMedia);
+        $req->execute();
+        // Close database connection
+        $db = null;
+
+        return $req->fetchAll();
+    }
+
+    public static function deleteOneHistoryEpisode($id, $idEpisode)
+    {
+// Open database connection
+        $db = init_db();
+        $req = $db->prepare("SELECT * FROM history_episode WHERE id = " . $id . " WHERE id_episode = " . $idEpisode);
+        $req->execute();
+        // Close database connection
+        $db = null;
+        return $req->fetchAll();
+    }
+
+    public static function setHistoriqueMedia($user_id, $media_id, $time_start, $time_finish, $watch_duration)
+    {
+// Open database connection
+        $db = init_db();
+        $req = "INSERT INTO history_media (user_id, media_id, start_date, finish_date, watch_duration) VALUES
+                (" . $user_id . ", " . $media_id . "," . $time_start . "," . $time_finish . ", " . $watch_duration . " )";
+        $req = $db->prepare();
+        $req->execute();
+        // Close database connection
+        $db = null;
+        return $req->fetchAll();
+    }
+
+    public static function setHistoriqueEpisode($user_id, $media_id, $episode_id, $time_start, $time_finish, $watch_duration)
+    {
+// Open database connection
+        $db = init_db();
+        $req = "INSERT INTO history_episode (user_id, media_id, episode_id, start_date, finish_date, watch_duration) VALUES
+                (" . $user_id . ", " . $media_id . "," . $episode_id . "," . $time_start . "," . $time_finish . ", " . $watch_duration . " )";
+        $req = $db->prepare($req);
+        $req->execute();
+        // Close database connection
+        $db = null;
         return $req->fetchAll();
     }
 }

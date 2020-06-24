@@ -10,14 +10,18 @@ require './model/Tools.php';
         let s = document.getElementById("saison").value;
         location.href = `index.php?media= <?=$_GET['media'] ?> &saison=${s}  &episode=${e}`
     }
-</script>
 
-<script type="text/javascript">
     function handleChangeSaison() {
         let e = document.getElementById("episodes").value;
         let s = document.getElementById("saison").value;
         location.href = `index.php?media= <?=$_GET['media'] ?> &saison=${s}  &episode=${e}`
     }
+
+    function handleStartVideo() {
+        console.log('hello')
+    }
+
+
 </script>
 
 <select id="episodes" onchange="handleChangeEpisode()">
@@ -63,10 +67,12 @@ require './model/Tools.php';
 
         }
         ?> </div>
-    <div>
-        <iframe loop controls muted frameborder="0" height="100%" width="100%"
-                src="<?=$mediaInfos['type'] ?$mediaInfos['trailer_url'] : $episode['url'] . "?autoplay=true"?>"
-                controls autoplay>
+    <div type="button"
+         onclick="handleStartVideo()">
+        <iframe
+                frameborder="0" height="100%" width="100%"
+                src="<?= $mediaInfos['type'] ? $mediaInfos['trailer_url'] : $episode['url'] . "?autoplay=true" ?>"
+        >
         </iframe>
     </div>
 </div>
