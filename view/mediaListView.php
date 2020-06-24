@@ -16,7 +16,10 @@
 <div class="media-list">
     <?php foreach ($medias as $media): ?>
         <div class="col-xs-12 col-md-6">
-            <a class="item" href="index.php?media=<?= $media['id']; ?>">
+            <a class="item"
+
+               href="index.php?media=<?= $media['id']; ?> <?= $media['type'] === 'Serie' ? ' &saison=1 &episode=1' : null ?>">
+
                 <div class="video">
                     <div>
                         <iframe allowfullscreen="" frameborder="0"
