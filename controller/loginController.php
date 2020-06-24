@@ -38,6 +38,7 @@ function login($post)
         $isConnect = false;
     }
 
+    echo '<p> yooooo</p>';
 
     if ($isConnect) {
         $user = new User($data);

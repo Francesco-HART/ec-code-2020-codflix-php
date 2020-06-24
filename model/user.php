@@ -51,6 +51,7 @@ class User
         if ($password_confirm && $password != $password_confirm) {
             throw new Exception('Vos mots de passes sont différents');
         }
+        $password = hash('sha256', $password);
         $this->password = $password;
     }
 
