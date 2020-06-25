@@ -53,7 +53,6 @@ require_once('model/historyEpisode.php');
 
                 success: function (response) {
                     console.log(response)
-
                     window.location.reload()
 
                 }
@@ -70,28 +69,6 @@ require_once('model/historyEpisode.php');
             >
                 Supprimer les historiques
             </button>
-        </div>
-        <div class=" col-xs-12 col-md-12">
-            <h3 style="text-align: center; margin-top: 10px"> Film </h3>
-
-            <table class="table table-hover" >
-                <thead>
-                <?php
-                foreach ($historyMedia as $saison => $value) {
-                    echo '<tr>';
-                    echo '<th scope="col">' . $value['title'] . '</th>';
-                    echo '<th scope="col">' . $value['name'] . '</th>';
-                    echo '<th scope="col">';
-                    echo $value['start_date'] === 1 ? 'durée de visionnage' . $value['watch_duration'] : '';
-                    echo '</th>';
-                    echo '<th scope="col"> Supprimer de l\'historique <input style="background: var(--color-red)"
-                    type="button" class="btn " value= ' . $value['id'] . ' onclick="handleDeleteOneMedia(this)"></input> </th>';
-                    echo '</tr>';
-
-                }
-                ?>
-                </thead>
-            </table>
         </div>
         <div class=" col-xs-12 col-md-12">
             <table class="table table-hover">
@@ -111,6 +88,27 @@ require_once('model/historyEpisode.php');
                     echo '</tr>';
                 }
                 ?>
+        </div>
+        <div class=" col-xs-12 col-md-12">
+            <table class="table table-hover">
+                <h3 style="text-align: center; margin-top: 10px"> Film </h3>
+                <thead>
+                <?php
+                foreach ($historyMedia as $saison => $value) {
+                    echo '<tr>';
+                    echo '<th scope="col">' . $value['title'] . '</th>';
+                    echo '<th scope="col">' . $value['name'] . '</th>';
+                    echo '<th scope="col">';
+                    echo $value['start_date'] === 1 ? 'durée de visionnage' . $value['watch_duration'] : '';
+                    echo '</th>';
+                    echo '<th scope="col"> Supprimer de l\'historique <input style="background: var(--color-red)"
+                    type="button" class="btn " value= ' . $value['id'] . ' onclick="handleDeleteOneMedia(this)"></input> </th>';
+                    echo '</tr>';
+
+                }
+                ?>
+                </thead>
+            </table>
         </div>
     </div>
 </div>

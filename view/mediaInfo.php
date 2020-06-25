@@ -15,72 +15,6 @@ function formatDuration($time)
 }
 
 ?>
-<script>
-
-    const tag = document.createElement('script');
-
-    tag.src = "https://www.youtube.com/iframe_api";
-    const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-    let player;
-
-    function onYouTubeIframeAPIReady() {
-        player = new YT.Player('player', {
-            events: {
-                'onReady': onPlayerReady,
-                'onStateChange': onPlayerStateChange
-            }
-        });
-    }
-
-    function onPlayerReady(event) {
-        event.target.playVideo();
-
-    }
-
-    let done = false;
-
-    function onPlayerStateChange(event) {
-        if (event.data == YT.PlayerState.PLAYING && !done) {
-            done = true;
-            console.log(done);
-        }
-    }
-
-    function stopVideo() {
-
-    }
-</script>
-<script type="text/javascript">
-    function onStartMedia() {
-        console.log('film')
-        $.ajax({
-            type: "POST",
-            url: "./actions/history/deleteOneEpisode.php",
-            cache: false,
-            data: {'target': target.value},
-            success: function (response) {
-                console.log(response)
-            }
-        });
-
-    }
-
-    function onStartSerie() {
-        console.log('serie')
-        $.ajax({
-            type: "POST",
-            url: "./actions/history/deleteOneEpisode.php",
-            cache: false,
-            data: {'target': target.value},
-            success: function (response) {
-                console.log(response)
-            }
-        });
-    }
-
-</script>
 <div>
     <script type="text/javascript">
         function handleChangeEpisode() {
@@ -90,9 +24,8 @@ function formatDuration($time)
         }
 
         function handleChangeSaison() {
-            let e = document.getElementById("episodes").value;
             let s = document.getElementById("saison").value;
-            location.href = `index.php?media= <?=$_GET['media'] ?> &saison=${s}  &episode=${e}`
+            location.href = `index.php?media= <?=$_GET['media'] ?> &saison=${s}  &episode=1`
         }
 
         function handleStartVideo() {
@@ -107,19 +40,25 @@ function formatDuration($time)
             <?php
             if ((isset($mediaInfos['type'])) && $mediaInfos['type'] === 'Serie'):
                 echo '<label for="exampleFormControlSelect1">Saisont</label>';
-                echo '<select class="form-control" id="exampleFormControlSelect1" id="saison" onchange="handleChangeSaison()">';
+                echo '<select class="form-control" id="saison" onchange="handleChangeSaison()">';
                 ?>
 
                 <?php
+
                 if (isset($_GET['saison']) && isset($_GET['episode'])) {
                     foreach ($saisons as $saison => $value) {
-                        if (intval($_GET['saison']) === intval($value["saison"])) {
-                            echo "<option value='" . $value["saison"] . "' selected>" . $value["saison"] . "</option> ";
-                        } else {
-                            echo "<option value='" . $value["saison"] . "'>" . $value["saison"] . "</option> ";
+                        try {
+                            if (intval($_GET['saison']) === intval($value["saison"])) {
+                                echo "<option value='" . $value["saison"] . "' selected>" . $value["saison"] . "</option> ";
+                            } else {
+                                echo "<option value='" . $value["saison"] . "'>" . $value["saison"] . "</option> ";
+                            }
+                        } catch (Exception $e) {
+                            echo '<h1>Cette épisode n\'existe pas sur notre plateforme</h1>';
                         }
                     }
                 }
+
                 ?>
                 <?php echo '</select>';
             endif;
@@ -131,24 +70,28 @@ function formatDuration($time)
             if ((isset($mediaInfos['type'])) && $mediaInfos['type'] === 'Serie'):
                 echo '<label for="exampleFormControlSelect1">Episode</label>';
 
-                echo '<select class="form-control" id="exampleFormControlSelect1" id="saison"
+                echo '<select class="form-control" 
                     id="episodes" onchange="handleChangeEpisode()">';
                 ?>
                 <?php
                 echo '<p>' . $_GET['saison'] . '</p>';
                 echo '<p>' . $_GET['episode'] . '</p>';
-
                 if (isset($_GET['saison']) && isset($_GET['episode'])) {
                     foreach ($episodes[intval($_GET['saison']) - 1] as $episode => $value) {
-                        $episode = intval($episode);
-                        $episode = $episode + 1;
-                        if (intval($_GET['episode']) === $episode) {
-                            echo "<option value='" . $episode . "' selected>" . $episode . "</option> ";
-                        } else {
-                            echo "<option value='" . $episode . "'>" . $episode . "</option> ";
+                        try {
+                            $episode = intval($episode);
+                            $episode = $episode + 1;
+                            if (intval($_GET['episode']) === $episode) {
+                                echo "<option value='" . $episode . "' selected>" . $episode . "</option> ";
+                            } else {
+                                echo "<option value='" . $episode . "'>" . $episode . "</option> ";
+                            }
+                        } catch (Exception $e) {
+                            echo '<h1>Cette épisode n\'existe pas sur notre plateforme</h1>';
                         }
                     }
                 }
+
                 ?>
 
                 <?php
@@ -160,25 +103,29 @@ function formatDuration($time)
     </div>
     <div class="title" style="text-align: center">
         <?php
-        if (isset($_GET['saison']) && isset($_GET['episode'])) {
-            $episode = $episodes[intval($_GET['saison']) - 1];
-            $episode = $episode[intval($_GET['episode']) - 1];
-            echo '<p>' . formatDuration($episode['time']) . '</p>';
-            echo '<h1>' . $episode['name'] . '</h1>';
 
+        if (isset($_GET['saison']) && isset($_GET['episode'])) {
+            try {
+                $episode = $episodes[intval($_GET['saison']) - 1];
+                $episode = $episode[intval($_GET['episode']) - 1];
+                echo '<h1>';
+                echo isset($episode['name']) ? $episode['name'] : "";
+                echo '</h1>';
+            } catch (Exception $e) {
+                echo '<h1>Cette épisode n\'existe pas sur notre plateforme</h1>';
+            }
         } else {
             echo '<h1>' . $mediaInfos['title'] . '</h1>';
-
         }
         ?> </div>
-    <div class="container" style="height: 400px; margin-bottom: 10px">
+    <div class="container" style="height: 350px; margin-bottom: 10px">
 
-            <iframe
-                    id="player"
-                    frameborder="0" height="100%" width="100%"
-                    src="<?= $mediaInfos['type'] === 'Film' ? $mediaInfos['url'] : $episode['url'] . "?enablejsapi=1" ?>"
-            >
-            </iframe>
+        <iframe
+                id="player"
+                frameborder="0" height="100%" width="100%"
+                src="<?= $mediaInfos['type'] === 'Film' ? $mediaInfos['url'] : $episode['url'] . "?enablejsapi=1" ?>"
+        >
+        </iframe>
 
     </div>
     <div class="col-xs-12 col-md-12">
@@ -193,12 +140,19 @@ function formatDuration($time)
             <div class="card-title" style="text-align: center">
                 <?php
                 if (isset($_GET['saison']) && isset($_GET['episode'])) {
-                    $episode = $episodes[intval($_GET['saison']) - 1];
-                    $episode = $episode[intval($_GET['episode']) - 1];
-                    echo '<h4>' . formatDuration($episode['time']) . '</h4>';
+                    try {
+                        $episode = $episodes[intval($_GET['saison']) - 1];
+                        $episode = $episode[intval($_GET['episode']) - 1];
+                        echo '<h4>';
+                        echo isset($episode['time']) ? formatDuration(($episode['time'])) : "";
+                        echo '</h4>';
+                    } catch (Exception $e) {
+                        echo '<h1>Cette épisode n\'existe pas sur notre plateforme</h1>';
+                    }
                 } else {
                     echo '<h4>' . formatDuration($mediaInfos['time']) . '</h4>';
                 }
+
                 ?>
             </div>
             <div class="card card-body">
@@ -211,5 +165,25 @@ function formatDuration($time)
 
 
 <?php $content = ob_get_clean(); ?>
+<?php
+try {
+    if ($mediaInfos['type'] === 'Film') {
+        $verifHistoryMedia = HistoryMedia::verifIfExist($user_id, $mediaInfos['id']);
+        if ($verifHistoryMedia) {
 
+            $setHistoryEpisode = HistoryMedia::setHistoryMedia($user_id, $mediaInfos['id'], '00:00:00');
+        }
+    } else {
+        $verifHistoryEpisode = HistoryEpisode::verifIfExist($user_id, $mediaInfos['id'], $_GET['saison'], $_GET['episode']);
+
+        if (!$verifHistoryEpisode) {
+            $setHistoryEpisode = HistoryEpisode::setHistoryEpisode($user_id, $mediaInfos['id'], $_GET['saison'], $_GET['episode'], '00:00:00');
+        }
+    }
+
+
+} catch (Exception $e) {
+
+}
+?>
 <?php require('dashboard.php'); ?>

@@ -137,6 +137,30 @@ class HistoryEpisode
     }
 
     /**
+     * @param $saison
+     * @param $episode
+     * @param $media_id
+     * @return bool
+     * get id for one episode
+     */
+    public static function getEpisode($saison, $episode, $media_id)
+    {
+        // Open database connection
+        $db = init_db();
+        $req = "SELECT * FROM `episode` 
+                WHERE saison = " . $saison . " AND   episode = " . $episode . " AND serie_id =" . $media_id;
+        $req = $db->prepare($req);
+        $req->execute();
+        // Close databse connection
+        $db = null;
+        $episode = $req->fetch();
+        if (!isset($episode['id'])) {
+            return false;
+        }
+        return $episode['id'];
+    }
+
+    /**
      * @param $userId
      * @return array
      * Delete  all history episode for one user
@@ -182,17 +206,21 @@ class HistoryEpisode
      * Create one history episode
      */
 
-    public static function setHistoryEpisode($user_id, $media_id, $episode_id, $watch_duration)
+    public static function setHistoryEpisode($user_id, $media_id, $saison, $episode, $watch_duration)
     {
 // Open database connection
+
+        $episode_id = self::getEpisode($saison, $episode, $media_id);
+        if (!$episode_id) {
+            throw new Exception('');
+        }
         $db = init_db();
-        $req = "INSERT INTO history_episode (user_id, media_id, episode_id, watch_duration) VALUES
-                (' . $user_id . ',' . $media_id . ',' . $episode_id . ', ' . $watch_duration . ' )";
+        $req = "INSERT INTO history_episode (user_id, media_id,episode_id, watch_duration) VALUES
+                ($user_id ,$media_id , $episode_id , ' $watch_duration ' )";
         $req = $db->prepare($req);
         $req->execute();
         // Close database connection
         $db = null;
-        return $req->fetchAll();
     }
 
     /**
@@ -222,16 +250,17 @@ class HistoryEpisode
      * verif if history for one episode exist
      * if exist whe don't create history we update juste history
      */
-    public static function verifIfExist($userId, $episode_id): bool
+    public static function verifIfExist($userId, $media_id, $saison, $episode): bool
     {
         // Open database connection
+        $episode_id = self::getEpisode($saison, $episode, $media_id);
         $db = init_db();
-        $req = $db->prepare("SELECT * FROM `history_episode` WHERE user_id = " . $userId . " WHERE episode_id =" . $episode_id);
+        $req = $db->prepare("SELECT * FROM `history_episode` WHERE user_id = " . $userId . " AND episode_id =" . $episode_id);
         $req->execute();
         // Close databse connection
         $db = null;
-        $res = $req->fetchAll();
-        if (empty($res)) {
+        $res = $req->fetch();
+        if (!empty($res)) {
             return true;
         }
         return false;

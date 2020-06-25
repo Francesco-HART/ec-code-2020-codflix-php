@@ -23,7 +23,6 @@ function mediaPage()
     if ($user_id) {
         if (isset($_GET['media'])) {
             $mediaInfos = Media::getMediaById($_GET['media']);
-            $saisons = [];
             $episodes = [];
             if ($mediaInfos['type'] === 'Serie') {
 
