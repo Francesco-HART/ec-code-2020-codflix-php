@@ -2,6 +2,9 @@
 
 require_once('database.php');
 
+/**
+ * Class HistoryEpisode model for history episode
+ */
 class HistoryEpisode
 {
 
@@ -14,6 +17,11 @@ class HistoryEpisode
     protected $finish_date;
     protected $watch_duration;
 
+    /**
+     * HistoryEpisode constructor.
+     * @param $history data for init start and finish
+     * start_date and finish date are bool 0 or 1
+     */
     public function __construct($history)
     {
         $this->setId(isset($history->id) ? $history->id : null);
@@ -45,14 +53,14 @@ class HistoryEpisode
         $this->media_id = $media_id;
     }
 
-    public function setStartDate($startDate)
+    public function setStartDate()
     {
-        $this->start_date = $startDate;
+        $this->start_date = 1;
     }
 
-    public function setFinishDate($finishDate)
+    public function setFinishDate()
     {
-        $this->finish_date = $finishDate;
+        $this->finish_date = 1;
     }
 
     public function setWatchDuration($watchDuration)
@@ -102,10 +110,13 @@ class HistoryEpisode
 
 
     /***************************
-     * -------- GET LIST --------
+     * -------- request LIST --------
      ***************************/
 
-
+    /**
+     * @param $userId
+     * @return array of history episode for one user
+     */
     public static function getHistoryEpisodeById($userId): array
     {
         // Open database connection
@@ -125,7 +136,11 @@ class HistoryEpisode
         return $req->fetchAll();
     }
 
-
+    /**
+     * @param $userId
+     * @return array
+     * Delete  all history episode for one user
+     */
     public static function deleteHistoryEpisode($userId)
     {
         // Open database connection
@@ -140,6 +155,12 @@ class HistoryEpisode
         return $req->fetchAll();
     }
 
+    /**
+     * @param $id
+     * @param $user_id
+     * @return array
+     * Delete one history episode (user id not necessary)
+     */
 
     public static function deleteOneHistoryEpisode($id, $user_id)
     {
@@ -152,8 +173,16 @@ class HistoryEpisode
         return $req->fetchAll();
     }
 
+    /**
+     * @param $user_id
+     * @param $media_id
+     * @param $episode_id
+     * @param $watch_duration
+     * @return array
+     * Create one history episode
+     */
 
-    public static function setHistory($user_id, $media_id, $episode_id, $watch_duration)
+    public static function setHistoryEpisode($user_id, $media_id, $episode_id, $watch_duration)
     {
 // Open database connection
         $db = init_db();
@@ -166,11 +195,19 @@ class HistoryEpisode
         return $req->fetchAll();
     }
 
-    public static function UpdateHistory($time_start, $time_finish, $watch_duration)
+    /**
+     * @param $id  of the history episode
+     * @param $time_start
+     * @param $time_finish
+     * @param $watch_duration
+     * @return array
+     * when start video or stop video we update history episode time_start , watch_duration and time_finish
+     */
+    public static function UpdateHistory($id, $time_start, $time_finish, $watch_duration)
     {
 // Open database connection
         $db = init_db();
-        $req = "UPDATE `history_episode` SET `time_start`=" . $time_start . ", `time_finish`=" . $time_finish . ", `watch_duration`=" . $watch_duration;
+        $req = "UPDATE `history_episode` SET `time_start`=" . $time_start . ", `time_finish`=" . $time_finish . ", `watch_duration`=" . $watch_duration . " WHERE id = " . $id;
         $req = $db->prepare($req);
         $req->execute();
         // Close database connection
@@ -178,12 +215,18 @@ class HistoryEpisode
         return $req->fetchAll();
     }
 
-
+    /**
+     * @param $userId
+     * @param $episode_id
+     * @return bool true history exist fale history don't exist
+     * verif if history for one episode exist
+     * if exist whe don't create history we update juste history
+     */
     public static function verifIfExist($userId, $episode_id): bool
     {
         // Open database connection
         $db = init_db();
-        $req = $db->prepare("SELECT * FROM `history_media` WHERE user_id = " . $userId . " WHERE episode_id =" . $episode_id);
+        $req = $db->prepare("SELECT * FROM `history_episode` WHERE user_id = " . $userId . " WHERE episode_id =" . $episode_id);
         $req->execute();
         // Close databse connection
         $db = null;

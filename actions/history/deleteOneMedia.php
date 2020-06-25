@@ -4,10 +4,13 @@ require_once('../../model/user.php');
 require_once('../../model/historyMedia.php');
 
 /***************************
- * ----- Delete one history -----
+ * ----- Delete one history media -----
  ***************************/
 
-
+/**
+ * @return string if ajax error
+ * delete one history media search by id of the history and user id (user id not necessary)
+ */
 function deleteOneMedia()
 {
 

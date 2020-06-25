@@ -91,9 +91,13 @@ class HistoryMedia
 
 
     /***************************
-     * -------- GET LIST --------
+     * -------- Request LIST --------
      ***************************/
 
+    /**
+     * @param $userId
+     * @return array of history media for one user
+     */
     public static function getHistoryMediaById($userId): array
     {
         // Open database connection
@@ -112,6 +116,11 @@ class HistoryMedia
         return $req->fetchAll();
     }
 
+    /**
+     * @param $userId
+     * @return array
+     * Delete  all history media for one user
+     */
 
     public static function deleteHistoryMedia($userId)
     {
@@ -124,6 +133,12 @@ class HistoryMedia
         return $req->fetchAll();
     }
 
+    /**
+     * @param $id
+     * @param $user_id
+     * @return array
+     * Delete one history media (user id not necessary)
+     */
 
     public static function deleteOneHistoryMedia($id, $user_id)
     {
@@ -137,8 +152,15 @@ class HistoryMedia
         return $req->fetchAll();
     }
 
+    /**
+     * @param $user_id
+     * @param $media_id
+     * @param $watch_duration
+     * @return array
+     * Create one history media
+     */
 
-    public static function setHistoryMedia($user_id, $media_id, $episode_id, $watch_duration)
+    public static function setHistoryMedia($user_id, $media_id, $watch_duration)
     {
 // Open database connection
         $db = init_db();
@@ -151,17 +173,35 @@ class HistoryMedia
         return $req->fetchAll();
     }
 
-    public static function UpdateHistoryMedia($time_start, $time_finish, $watch_duration)
+    /**
+     * @param $id of the history media
+     * @param $time_start
+     * @param $time_finish
+     * @param $watch_duration
+     * @return array
+     * when start video or stop video we update history media time_start , watch_duration and time_finish
+     */
+
+    public static function UpdateHistoryMedia($id, $time_start, $time_finish, $watch_duration)
     {
 // Open database connection
         $db = init_db();
-        $req = "UPDATE `history_media` SET `time_start`=" . $time_start . ", `time_finish`=" . $time_finish . ", `watch_duration`=" . $watch_duration;
+        $req = "UPDATE `history_media` SET `time_start`=" . $time_start . ", `time_finish`=" . $time_finish . ", `watch_duration`=" . $watch_duration . " WHERE id = " . $id;
         $req = $db->prepare($req);
         $req->execute();
         // Close database connection
         $db = null;
         return $req->fetchAll();
     }
+
+    /**
+     * @param $userId
+     * @param $media_id
+     * @return bool true history exist fale history don't exist
+     * verif if history for one media exist
+     * if exist whe don't create history we update juste history
+     */
+
     public static function verifIfExist($userId, $media_id): bool
     {
         // Open database connection

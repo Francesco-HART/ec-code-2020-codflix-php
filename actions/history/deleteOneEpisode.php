@@ -4,9 +4,13 @@ require_once('../../model/user.php');
 require_once('../../model/historyEpisode.php');
 
 /***************************
- * ----- Delete one history -----
+ * ----- Delete one history Episode-----
  ***************************/
 
+/**
+ * @return string if ajax error
+ * delete one history episode search by id of the history and useer id (user id not necessary)
+ */
 
 function deleteOneEpisode()
 {

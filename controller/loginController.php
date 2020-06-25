@@ -7,13 +7,14 @@ require_once('model/user.php');
 /****************************
  * ----- LOAD LOGIN PAGE -----
  ****************************/
-
+/**
+ * verif if user is connect
+ * if not connect redirect to login view
+ */
 function loginPage()
 {
-
     $user = new stdClass();
     $user->id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : false;
-
     if (!$user->id):
         require('view/auth/loginView.php');
     else:

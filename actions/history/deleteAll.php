@@ -4,6 +4,11 @@ require_once('../../model/user.php');
 require_once('../../model/historyEpisode.php');
 require_once('../../model/historyMedia.php');
 
+
+/**
+ * @return string if request error
+ * delete all history for one user
+ */
 function deleteAll()
 {
     $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : false;

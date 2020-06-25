@@ -15,20 +15,28 @@
 
 <div class="media-list">
     <?php foreach ($medias as $media): ?>
-        <div class="col-xs-12 col-md-6">
-            <a class="item"
-
-               href="index.php?media=<?= $media['id']; ?> <?= $media['type'] === 'Serie' ? ' &saison=1 &episode=1' : null ?>">
-
-                <div class="video">
-                    <div>
-                        <iframe allowfullscreen="" frameborder="0"
-                                src="<?= $media['trailer_url']; ?>"></iframe>
-                    </div>
+        <a class="item"
+           href="index.php?media=<?= $media['id']; ?> <?= $media['type'] === 'Serie' ? ' &saison=1 &episode=1' : null ?>">
+            <div class="video">
+                <div>
+                    <iframe allowfullscreen="" frameborder="0"
+                            src="<?= $media['trailer_url']; ?>">
+                    </iframe>
                 </div>
-                <div class="title"><?= $media['title']; ?></div>
-            </a>
-        </div>
+            </div>
+            <div class="title"><?= $media['title']; ?></div>
+            <?php
+            $date = explode('-', $media['release_date']);
+            $date = $date[2] . " / " . $date[1] . " / " . $date[0];
+            ?>
+            <div class="text-md-center">
+                <div class="text-decoration-none">
+                <span style="color: white">
+                    <?= $date ?>
+                </span>
+                </div>
+            </div>
+        </a>
     <?php endforeach; ?>
 </div>
 

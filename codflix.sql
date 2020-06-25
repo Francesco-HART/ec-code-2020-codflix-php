@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.2
+-- version 4.9.2
 -- https://www.phpmyadmin.net/
 --
--- Host: db
--- Generation Time: Jun 06, 2020 at 08:35 AM
--- Server version: 5.7.30
--- PHP Version: 7.4.5
+-- Hôte : localhost
+-- Généré le :  mar. 23 juin 2020 à 22:06
+-- Version du serveur :  10.4.11-MariaDB
+-- Version de PHP :  7.4.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -18,16 +19,16 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `codflix`
+-- Base de données :  `codflix`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `genre`
+-- Structure de la table `genre`
 --
+CREATE DATABASE if NOT EXISTS codflix CHARACTER SET 'utf8';
 
-DROP TABLE IF EXISTS `genre`;
 CREATE TABLE `genre`
 (
     `id`   int(11)     NOT NULL,
@@ -36,21 +37,49 @@ CREATE TABLE `genre`
   DEFAULT CHARSET = latin1;
 
 --
--- Dumping data for table `genre`
+-- Déchargement des données de la table `genre`
 --
 
 INSERT INTO `genre` (`id`, `name`)
 VALUES (1, 'Action'),
        (2, 'Horreur'),
-       (3, 'Science-Fiction');
+       (3, 'Science-Fiction'),
+       (4, 'Humour');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `media`
+-- Structure de la table `history`
 --
 
-DROP TABLE IF EXISTS `media`;
+CREATE TABLE `history_media`
+(
+    `id`             int(11)    NOT NULL,
+    `user_id`        int(11)    NOT NULL,
+    `media_id`       int(11)    NOT NULL,
+    `start_date`     tinyint(1) NOT NULL DEFAULT 0,
+    `finish_date`    tinyint(1) NOT NULL DEFAULT 0,
+    `watch_duration` int(11)    NOT NULL DEFAULT 0 COMMENT 'in seconds'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = latin1;
+
+-- --------------------------------------------------------
+
+CREATE TABLE `history_episode`
+(
+    `id`             int(11)    NOT NULL,
+    `user_id`        int(11)    NOT NULL,
+    `media_id`       int(11)    NOT NULL,
+    `episode_id`     int(11)    NOT NULL,
+    `start_date`     tinyint(1) NOT NULL DEFAULT 0,
+    `finish_date`    tinyint(1) NOT NULL DEFAULT 0,
+    `watch_duration` int(11)    NOT NULL DEFAULT 0 COMMENT 'in seconds'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = latin1;
+--
+-- Structure de la table `media`
+--
+
 CREATE TABLE `media`
 (
     `id`           int(11)      NOT NULL,
@@ -60,48 +89,74 @@ CREATE TABLE `media`
     `status`       varchar(20)  NOT NULL,
     `release_date` date         NOT NULL,
     `summary`      longtext     NOT NULL,
-    `trailer_url`  varchar(100) NOT NULL
+    `trailer_url`  varchar(100) NOT NULL,
+    `url`          varchar(100) NOT NULL,
+    `time`         TIME         NOT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = latin1;
 
+--
+-- Déchargement des données de la table `media`
+--
+
+INSERT INTO `media` (`id`, `genre_id`, `title`, `type`, `status`, `release_date`, `summary`, `trailer_url`, `url`,
+                     `time`)
+VALUES (1, 1, 'Lord of the ring', 'Film', 'Média publié', '1990-10-30', ' Le Seigneur des anneaux (The Lord of the Rings) est un roman en trois volumes de J. R. R. Tolkien paru en 1954 et 1955.
+Prenant place dans le monde de fiction de la Terre du Milieu, il suit la quête du hobbit Frodo Bessac, qui doit détruire l\'Anneau unique afin que celui-ci ne tombe pas entre les mains de Sauron, le Seigneur des ténèbres. Plusieurs personnages lui viennent en aide, parmi lesquels son serviteur Sam, le mage Gandalf ou encore l\'humain Aragorn, héritier d\'une longue lignée de rois.',
+        'https://www.youtube.com/embed/V75dMMIW2B4', 'https://www.youtube.com/embed/LML6SoNE7xE', '03:50:00'),
+       (3, 1, 'Rambo', 'Film', 'Média publié', '1981-11-18',
+        'John Rambo est un ancien béret vert américain, le dernier survivant d\'un commando d\'élite formé durant la guerre du Viêt Nam et dirigé par le colonel Samuel Trautman. Après la guerre du Viêt Nam où il a, entre autres, été capturé et torturé par l\'ennemi, John Rambo est de retour aux États-Unis. Il se heurte à l\'hostilité de \'Amérique envers les anciens soldats et n\'arrive pas à se réinsérer socialement.',
+        'https://www.youtube.com/embed/YPuhNtG47M0', 'https://www.youtube.com/embed/jOPVEIjjgYU', '01:30:00'),
+       (4, 4, 'Dragon ball', 'Serie', 'Média publié', '1985-11-16',
+        'Dragon Ball (ドラゴンボール, Doragon Bōru, litt. Dragon Ball) est une série de mangas créée par Akira Toriyama, celui-ci inspirant librement du roman de Wu Chengen La Pérégrination vers lOuest. ... Dragon Ball raconte le parcours de Son Goku, depuis lenfance jusquà lâge adulte',
+        'https://www.youtube.com/embed/I-UJ9ACAPWM', 'https://www.youtube.com/embed/CbdaDZGzlEw', '00:20:00');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `history`
+-- Structure de la table `series`
 --
 
-DROP TABLE IF EXISTS `history`;
-CREATE TABLE `history`
+CREATE TABLE `episode`
 (
-    `id`             int(11)  NOT NULL,
-    `user_id`        int(11)  NOT NULL,
-    `media_id`       int(11)  NOT NULL,
-    `start_date`     datetime NOT NULL,
-    `finish_date`    datetime          DEFAULT NULL,
-    `watch_duration` int(11)  NOT NULL DEFAULT '0' COMMENT 'in seconds'
-) ENGINE = InnoDB
-  DEFAULT CHARSET = latin1;
-
-
-CREATE TABLE `episodes`
-(
-    `id`       INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `serie_id` int(11)          NOT NULL,
-    `saison`   int(11)          NOT NULL,
-    `episode`  int(11)          NOT NULL,
-    `url`      varchar(100)     NOT NULL,
-    `time`     TIME             NOT NULL,
-    `name`     varchar(254)     NOT NULL
+    `id`       int(11)      NOT NULL,
+    `serie_id` int(11)      NOT NULL,
+    `saison`   int(11)      NOT NULL,
+    `episode`  int(11)      NOT NULL,
+    `name`     varchar(254) NOT NULL,
+    `url`      varchar(100) NOT NULL,
+    `time`     TIME         NOT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
+
+--
+-- Déchargement des données de la table `series`
+--
+
+INSERT INTO `episode` (`id`, `serie_id`, `saison`, `episode`, `name`, `url`, `time`)
+VALUES (1, 4, 1, 1, 'DBZ 1', 'https://www.youtube.com/embed/EkTM3960pt8', '00:20:00'),
+       (2, 4, 1, 2, 'DBZ 2', 'https://www.youtube.com/embed/L-iGOHfX-wg', '00:20:00'),
+       (3, 4, 1, 3, 'DBZ 3', 'https://www.youtube.com/embed/8iib5U3l_NE', '00:20:00'),
+       (4, 4, 1, 4, 'DBZ 4', 'https://www.youtube.com/embed/PtUhjyZIaHA', '00:23:00'),
+
+       (5, 4, 1, 5, 'DBZ 5', 'https://www.youtube.com/embed/-uj5YrX32rA', '00:20:00'),
+       (6, 4, 1, 6, 'DBZ 6', 'https://www.youtube.com/embed/SwBCZ4u_P5Y', '00:22:00'),
+
+       (7, 4, 1, 7, 'DBZ 7', 'https://www.youtube.com/embed/Pzk7Vza9yzs', '00:20:00'),
+       (8, 4, 1, 8, 'DBZ 8', 'https://www.youtube.com/embed/UZJR_uDGils', '00:21:00'),
+
+       (9, 4, 2, 1, ' DBZ 1', 'https://www.youtube.com/embed/Wpfz1uan4Rs', '00:20:30'),
+       (10, 4, 3, 1, 'DBZ 1', 'https://www.youtube.com/embed/063Pzii3bqk', '00:20:50'),
+       (11, 4, 2, 2, 'DBZ 2', 'https://www.youtube.com/embed/4DZX4ys6H1U', '00:20:00'),
+       (12, 4, 2, 3, 'DBZ 3', 'https://www.youtube.com/embed/mxHDJF1yKP4', '00:20:40'),
+       (13, 4, 2, 4, 'DBZ 4', 'https://www.youtube.com/embed/jTJql8Yhd8s', '00:20:00');
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user`
+-- Structure de la table `user`
 --
 
-DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`
 (
     `id`       int(11)      NOT NULL,
@@ -112,83 +167,139 @@ CREATE TABLE `user`
   DEFAULT CHARSET = latin1;
 
 --
--- Indexes for dumped tables
+-- Déchargement des données de la table `user`
+--
+
+INSERT INTO `user` (`id`, `email`, `password`, `isActive`)
+VALUES (1, 'a@a.fr', 'a', 0),
+       (2, 'francihartyahoo.fr', '12', 0);
+
+--
+-- Index pour les tables déchargées
 --
 
 --
--- Indexes for table `genre`
+-- Index pour la table `genre`
 --
 ALTER TABLE `genre`
     ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `media`
+-- Index pour la table `history`
+--
+ALTER TABLE `history_media`
+    ADD PRIMARY KEY (`id`),
+    ADD KEY `history_user_id_fk_media_id` (`user_id`),
+    ADD KEY `history_media_id_fk_media_id` (`media_id`);
+
+
+--
+-- Index pour la table `history`
+--
+
+ALTER TABLE `history_episode`
+    ADD PRIMARY KEY (`id`),
+    ADD KEY `history_user_episode_id_fk_media_id` (`user_id`),
+    ADD KEY `history_media_episode_id_fk_media_id` (`media_id`),
+    ADD KEY `history_episode_id_fk_media_id` (`media_id`);
+
+
+--
+-- Index pour la table `media`
 --
 ALTER TABLE `media`
     ADD PRIMARY KEY (`id`),
     ADD KEY `media_genre_id_fk_genre_id` (`genre_id`) USING BTREE;
 
-
 --
--- Indexes for table `history`
+-- Index pour la table `series`
 --
-ALTER TABLE `history`
+ALTER TABLE `episode`
     ADD PRIMARY KEY (`id`),
-    ADD KEY `history_user_id_fk_media_id` (`user_id`),
-    ADD KEY `history_media_id_fk_media_id` (`media_id`);
+    ADD KEY `fk_media_serie_id` (`serie_id`);
 
 --
--- Indexes for table `user`
+-- Index pour la table `user`
 --
 ALTER TABLE `user`
     ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT pour les tables déchargées
 --
 
 --
--- AUTO_INCREMENT for table `genre`
+-- AUTO_INCREMENT pour la table `genre`
 --
 ALTER TABLE `genre`
     MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,
-    AUTO_INCREMENT = 4;
+    AUTO_INCREMENT = 5;
 
 --
--- AUTO_INCREMENT for table `media`
+-- AUTO_INCREMENT pour la table `history_media`
+--
+ALTER TABLE `history_media`
+    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
+--
+-- AUTO_INCREMENT pour la table `history_serie`
+--
+ALTER TABLE `history_episode`
+    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `media`
 --
 ALTER TABLE `media`
-    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
-
---
--- AUTO_INCREMENT for table `history`
---
-ALTER TABLE `history`
-    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,
+    AUTO_INCREMENT = 5;
 
 --
--- AUTO_INCREMENT for table `user`
+-- AUTO_INCREMENT pour la table `series`
+--
+ALTER TABLE `episode`
+    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,
+    AUTO_INCREMENT = 9;
+
+--
+-- AUTO_INCREMENT pour la table `user`
 --
 ALTER TABLE `user`
-    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+    MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,
+    AUTO_INCREMENT = 2;
 
 --
--- Constraints for dumped tables
+-- Contraintes pour les tables déchargées
 --
 
 --
--- Constraints for table `media`
+-- Contraintes pour la table `history_media`
+--
+ALTER TABLE `history_media`
+    ADD CONSTRAINT `history_media_id_fk_media_id` FOREIGN KEY (`media_id`) REFERENCES `media` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    ADD CONSTRAINT `history_user_id_fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+
+--
+-- Contraintes pour la table `history`
+--
+ALTER TABLE `history_episode`
+    ADD CONSTRAINT `history_media_episode_id_fk_media_id` FOREIGN KEY (`media_id`) REFERENCES `media` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    ADD CONSTRAINT `history_user_episode_id_fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    ADD CONSTRAINT `history_episode_number_fk_media_id` FOREIGN KEY (`episode_id`) REFERENCES `episode` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `media`
 --
 ALTER TABLE `media`
     ADD CONSTRAINT `media_genre_id_b1257088_fk_genre_id` FOREIGN KEY (`genre_id`) REFERENCES `genre` (`id`);
 
 --
--- Constraints for table `history`
+-- Contraintes pour la table `series`
 --
-ALTER TABLE `history`
-    ADD CONSTRAINT `history_media_id_fk_media_id` FOREIGN KEY (`media_id`) REFERENCES `media` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    ADD CONSTRAINT `history_user_id_fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `episode`
+    ADD CONSTRAINT `fk_media_serie_episode_id` FOREIGN KEY (`serie_id`) REFERENCES `media` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT = @OLD_CHARACTER_SET_CLIENT */;
@@ -196,7 +307,21 @@ COMMIT;
 /*!40101 SET COLLATION_CONNECTION = @OLD_COLLATION_CONNECTION */;
 
 
+INSERT INTO history_media (user_id, media_id, watch_duration)
+VALUES (1, 3, '00:00:00'),
+       (1, 1, '00:00:00'),
+       (1, 1, '00:00:00'),
+       (2, 3, '00:00:00'),
+       (1, 3, '00:00:00'),
+       (1, 3, '00:00:00'),
+       (1, 1, '00:00:00');
 
-INSERT INTO media (id, genre_id, title, type, status, release_date, summary, trailer_url)
-VALUES (NULL, '1', 'La belle histoiree', 'Film', 'Média publié', '2015-10-30',
-        'La jeune vie du nouveau grand coder de cette génération', 'https://www.youtube.com/watch?v=iW0B9NTId2g');
+INSERT INTO history_episode (user_id, media_id, episode_id, watch_duration)
+VALUES (1, 4, 3, '00:00:00'),
+       (1, 4, 3, '00:00:00'),
+       (1, 4, 7, '00:00:00'),
+       (1, 4, 3, '00:00:00'),
+       (2, 4, 6, '00:00:00'),
+       (2, 4, 1, '00:00:00'),
+       (1, 4, 2, '00:00:00'),
+       (1, 4, 3, '00:00:00');

@@ -8,6 +8,12 @@
  * YT.PlayerState.CUED
  **/
 ob_start();
+function formatDuration($time)
+{
+    $time = $time[0] != 0 ? $time[0] . $time[1] . "h" . $time[3] . $time[4] . "m" . $time[6] . $time[7] . "s" : $time[3] . $time[4] . "m" . $time[6] . $time[7] . "s";
+    return $time;
+}
+
 ?>
 <script>
 
@@ -95,60 +101,110 @@ ob_start();
 
 
     </script>
+    <div class="row btn-container">
+        <div class="col-xs-6 col-sm-6">
 
-    <select id="episodes" onchange="handleChangeEpisode()">
-        <?php
-        echo '<p>' . $_GET['saison'] . '</p>';
-        echo '<p>' . $_GET['episode'] . '</p>';
+            <?php
+            if ((isset($mediaInfos['type'])) && $mediaInfos['type'] === 'Serie'):
+                echo '<label for="exampleFormControlSelect1">Saisont</label>';
+                echo '<select class="form-control" id="exampleFormControlSelect1" id="saison" onchange="handleChangeSaison()">';
+                ?>
 
-        if (isset($_GET['saison']) && isset($_GET['episode'])) {
-            foreach ($episodes[intval($_GET['saison']) - 1] as $episode => $value) {
-                $episode = intval($episode);
-                $episode = $episode + 1;
-                if (intval($_GET['episode']) === $episode) {
-                    echo "<option value='" . $episode . "' selected>" . $episode . "</option> ";
-                } else {
-                    echo "<option value='" . $episode . "'>" . $episode . "</option> ";
+                <?php
+                if (isset($_GET['saison']) && isset($_GET['episode'])) {
+                    foreach ($saisons as $saison => $value) {
+                        if (intval($_GET['saison']) === intval($value["saison"])) {
+                            echo "<option value='" . $value["saison"] . "' selected>" . $value["saison"] . "</option> ";
+                        } else {
+                            echo "<option value='" . $value["saison"] . "'>" . $value["saison"] . "</option> ";
+                        }
+                    }
                 }
-            }
-        }
-        ?>
-    </select>
+                ?>
+                <?php echo '</select>';
+            endif;
+            ?>
+        </div>
 
-    <select id="saison" onchange="handleChangeSaison()">
+        <div class="col-xs-6 col-sm-6">
+            <?php
+            if ((isset($mediaInfos['type'])) && $mediaInfos['type'] === 'Serie'):
+                echo '<label for="exampleFormControlSelect1">Episode</label>';
+
+                echo '<select class="form-control" id="exampleFormControlSelect1" id="saison"
+                    id="episodes" onchange="handleChangeEpisode()">';
+                ?>
+                <?php
+                echo '<p>' . $_GET['saison'] . '</p>';
+                echo '<p>' . $_GET['episode'] . '</p>';
+
+                if (isset($_GET['saison']) && isset($_GET['episode'])) {
+                    foreach ($episodes[intval($_GET['saison']) - 1] as $episode => $value) {
+                        $episode = intval($episode);
+                        $episode = $episode + 1;
+                        if (intval($_GET['episode']) === $episode) {
+                            echo "<option value='" . $episode . "' selected>" . $episode . "</option> ";
+                        } else {
+                            echo "<option value='" . $episode . "'>" . $episode . "</option> ";
+                        }
+                    }
+                }
+                ?>
+
+                <?php
+                echo '</select>';
+            endif; ?>
+        </div>
+
+
+    </div>
+    <div class="title" style="text-align: center">
         <?php
         if (isset($_GET['saison']) && isset($_GET['episode'])) {
-            foreach ($saisons as $saison => $value) {
-                if (intval($_GET['saison']) === intval($value["saison"])) {
-                    echo "<option value='" . $value["saison"] . "' selected>" . $value["saison"] . "</option> ";
-                } else {
-                    echo "<option value='" . $value["saison"] . "'>" . $value["saison"] . "</option> ";
-                }
-            }
+            $episode = $episodes[intval($_GET['saison']) - 1];
+            $episode = $episode[intval($_GET['episode']) - 1];
+            echo '<p>' . formatDuration($episode['time']) . '</p>';
+            echo '<h1>' . $episode['name'] . '</h1>';
+
+        } else {
+            echo '<h1>' . $mediaInfos['title'] . '</h1>';
+
         }
-        ?>
-    </select>
+        ?> </div>
+    <div class="container" style="height: 400px; margin-bottom: 10px">
 
-    <div class="col-xs-12 col-md-6">
-        <div class="title"><?php
-            if (isset($_GET['saison']) && isset($_GET['episode'])) {
-                $episode = $episodes[intval($_GET['saison']) - 1];
-                $episode = $episode[intval($_GET['episode']) - 1];
-                echo '<p>' . $episode['time'] . '</p>';
-                echo '<p>' . $episode['name'] . '</p>';
-
-            }
-            ?> </div>
-        <button onclick="<?= $mediaInfos['type'] === 'Film' ? 'onStartMedia()' : 'onStartSerie()' ?>"
-        >roooooh
-        </button>
-        <div type="button">
             <iframe
                     id="player"
                     frameborder="0" height="100%" width="100%"
-                    src="<?= $mediaInfos['type'] === 'Film' ? $mediaInfos['trailer_url'] : $episode['url'] . "?enablejsapi=1" ?>"
+                    src="<?= $mediaInfos['type'] === 'Film' ? $mediaInfos['url'] : $episode['url'] . "?enablejsapi=1" ?>"
             >
             </iframe>
+
+    </div>
+    <div class="col-xs-12 col-md-12">
+        <p>
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#description"
+                    aria-expanded="false" aria-controls="description">
+                Description
+            </button>
+        </p>
+
+        <div class="collapse" id="description">
+            <div class="card-title" style="text-align: center">
+                <?php
+                if (isset($_GET['saison']) && isset($_GET['episode'])) {
+                    $episode = $episodes[intval($_GET['saison']) - 1];
+                    $episode = $episode[intval($_GET['episode']) - 1];
+                    echo '<h4>' . formatDuration($episode['time']) . '</h4>';
+                } else {
+                    echo '<h4>' . formatDuration($mediaInfos['time']) . '</h4>';
+                }
+                ?>
+            </div>
+            <div class="card card-body">
+                <?php
+                echo '<p>' . $mediaInfos['summary'] . '<p/>';
+                ?>            </div>
         </div>
     </div>
 </div>

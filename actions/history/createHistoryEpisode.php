@@ -4,9 +4,13 @@ require_once('../../model/user.php');
 require_once('../../model/historyEpisode.php');
 
 /***************************
- * ----- Delete one history -----
+ * ----- Create one history -----
  ***************************/
+/**
 
+ Request call by ajax in mediaInfo for create one historyEpisode if user is connect and
+
+ **/
 
 function deleteOneEpisode()
 {
