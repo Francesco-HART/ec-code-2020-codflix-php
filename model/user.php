@@ -192,7 +192,7 @@ class User
     {
 
         $isSend = false;
-        $res = $this->getUserByEmail();
+        $res = $this->getEmail();
         $target = $this->email;
         $info = "Activation de votre compte";
         $header = "From: inscription@codflix.com";
@@ -205,6 +205,22 @@ class User
             mail($target, $info, $msg, $header);
             $isSend = true;
             return $isSend;
+        } catch (Exception $e) {
+            throw new Exception('Erreur du serveur l\'email de confirmation n\'a pas pu être envoyé');
+        }
+
+    }
+
+    public function sendEmail($message, $email): void
+    {
+        $target = 'contact@codflix.com';
+        $info = "Message";
+        $header = "From: contactus@codflix.com";
+        $msg = $message;
+
+
+        try {
+            mail($target, $info, $msg, $header);
         } catch (Exception $e) {
             throw new Exception('Erreur du serveur l\'email de confirmation n\'a pas pu être envoyé');
         }
