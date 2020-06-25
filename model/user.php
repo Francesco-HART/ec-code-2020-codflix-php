@@ -137,7 +137,7 @@ class User
          */
 
         if ($this->sendActivationMail()) {
-            throw new Exception('Erreur du serveur l\'email de confirmation n\'a pas pu être envoyé');
+            throw new Exception('\'Erreur du serveur l\'email de confirmation n\'a pas pu être envoyé (Le message du dessus est volontairement laissé)');
         }
         // Close databse connection
         $db = null;
@@ -198,7 +198,7 @@ class User
         $header = "From: inscription@codflix.com";
         $msg = 'Codflix,
         For activer your compt, clic on the link  
-        http://codflix/inscription/activation.php?log=' . $res['id'] . ' 
+        http://codflix/inscription/activation.php?log=' . $this->getId() . ' 
 
         ---------------';
         try {
@@ -206,11 +206,17 @@ class User
             $isSend = true;
             return $isSend;
         } catch (Exception $e) {
-            throw new Exception('Erreur du serveur l\'email de confirmation n\'a pas pu être envoyé');
+            throw new Exception('Erreur du serveur l\'email de confirmation n\'a pas pu être envoyé (Le message du dessus est volontairement laissé)');
         }
 
     }
 
+    /**
+     * @param $message
+     * @param $email
+     * @throws Exception
+     * can send email
+     */
     public function sendEmail($message, $email): void
     {
         $target = 'contact@codflix.com';
