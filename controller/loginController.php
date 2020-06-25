@@ -38,9 +38,6 @@ function login($post)
         $error_msg = "Email ou mot de passe incorrect";
         $isConnect = false;
     }
-
-    echo '<p> yooooo</p>';
-
     if ($isConnect) {
         $user = new User($data);
 
