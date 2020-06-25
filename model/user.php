@@ -37,6 +37,24 @@ class User
         $this->email = $email;
     }
 
+    /**
+     * @param $password
+     * @param bool $password_confirm
+     * @throws Exception
+     * all verification beafor set password and after we cryp passe word
+     *
+     *
+     *
+     *
+     * ****************** For connection we need crypting pasword else is impossible!! *************************
+     * we need security for our user and our admin we add required on the front and security schema
+     *
+     *
+     *
+     *
+     *
+     */
+
     public function setPassword($password, $password_confirm = false)
     {
         if (!$password) {
@@ -51,6 +69,7 @@ class User
         if ($password_confirm && $password != $password_confirm) {
             throw new Exception('Vos mots de passes sont différents');
         }
+        $password = hash('sha256', $password);
         $this->password = $password;
     }
 
@@ -94,7 +113,9 @@ class User
 
         // Open database connection
         $db = init_db();
-
+        /**
+         * verify if user exist
+         */
         // Check if email already exist
         $req = $db->prepare("SELECT * FROM user WHERE email = '" . $this->email . "'");
         $req->execute();
@@ -110,6 +131,11 @@ class User
             'password' => $this->getPassword()
         ));
 
+
+        /**
+         * send email for active accont
+         */
+
         if ($this->sendActivationMail()) {
             throw new Exception('Erreur du serveur l\'email de confirmation n\'a pas pu être envoyé');
         }
@@ -121,6 +147,11 @@ class User
      * -------- GET USER DATA BY ID --------
      ***************************************/
 
+    /**
+     * @param $id
+     * @return mixed
+     * get one user by id
+     */
     public static function getUserById($id)
     {
 
@@ -139,7 +170,10 @@ class User
     /***************************************
      * ------- GET USER DATA BY EMAIL -------
      ****************************************/
-
+    /**
+     * @return mixed
+     * get one user by email
+     */
     public function getUserByEmail()
     {
         // Open database connection

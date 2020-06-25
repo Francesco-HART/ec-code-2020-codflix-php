@@ -2,6 +2,9 @@
 
 require_once('database.php');
 
+/**
+ * Class Media for create one media
+ */
 class Media
 {
 
@@ -101,9 +104,14 @@ class Media
     }
 
     /***************************
-     * -------- GET LIST --------
+     * -------- Request LIST --------
      ***************************/
 
+    /**
+     * @param $title
+     * @return array
+     * first page request for filter media by title
+     */
     public static function filterMedias($title): array
     {
         // Open database connection
@@ -115,6 +123,12 @@ class Media
         return $req->fetchAll();
     }
 
+    /**
+     * @param $id
+     * @return array
+     * get one media
+     */
+
     public static function getMediaById($id): array
     {
         // Open database connection
@@ -125,6 +139,12 @@ class Media
         $db = null;
         return $req->fetch();
     }
+
+    /**
+     * @param $id
+     * @return mixed
+     * get media genre
+     */
 
     public static function getMediaGenderById($id)
     {
@@ -140,6 +160,10 @@ class Media
         return $req->fetch();
     }
 
+    /**
+     * @return mixed get all series
+     */
+
     public static function getSeries()
     {
         // Open database connection
@@ -154,11 +178,17 @@ class Media
         return $req->fetch();
     }
 
+    /**
+     * @param $id
+     * @param $saison
+     * @return array
+     * get all episode for one saison of one serie
+     */
     public static function getEpisodesBySaisonId($id, $saison)
     {
         // Open database connection
         $db = init_db();
-        $sql = "SELECT * FROM series WHERE serie_id = " . $id . " AND saison = " . $saison;
+        $sql = "SELECT * FROM episode WHERE serie_id = " . $id . " AND saison = " . $saison;
         $req = $db->prepare($sql);
         $req->execute();
 
@@ -167,11 +197,16 @@ class Media
         return $req->fetchAll();
     }
 
+    /**
+     * @param $id
+     * @return array
+     * get all episode of one serie group by saison
+     */
     public static function getSaisonsByMediaId($id)
     {
 // Open database connection
         $db = init_db();
-        $req = $db->prepare("SELECT * FROM series WHERE serie_id = " . $id . " GROUP BY saison");
+        $req = $db->prepare("SELECT * FROM episode WHERE serie_id = " . $id . " GROUP BY saison");
         $req->execute();
         // Close database connection
         $db = null;

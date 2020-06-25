@@ -5,7 +5,10 @@ require_once( 'model/user.php' );
 /***************************
 * ----- LOAD HOME PAGE -----
 ***************************/
-
+/**
+ * verif if user is connect
+ * if not connect redirect to home
+ */
 function homePage() {
 
   $user_id = isset( $_SESSION['user_id'] ) ? $_SESSION['user_id'] : false;
