@@ -164,8 +164,7 @@ class HistoryMedia
     {
 // Open database connection
         $db = init_db();
-        $req = "INSERT INTO history_media (user_id, media_id, watch_duration) VALUES
-                (' . $user_id . ',' . $media_id . ', ' . $watch_duration . ' )";
+        $req = "INSERT INTO history_media (user_id, media_id, watch_duration) VALUES ( $user_id ,$media_id , ' $watch_duration ' )";
         $req = $db->prepare($req);
         $req->execute();
         // Close database connection
@@ -206,7 +205,7 @@ class HistoryMedia
     {
         // Open database connection
         $db = init_db();
-        $req = $db->prepare("SELECT * FROM `history_media` WHERE user_id = " . $userId . " WHERE media_id =" . $media_id);
+        $req = $db->prepare("SELECT * FROM `history_media` WHERE user_id = " . $userId . " AND media_id =" . $media_id);
         $req->execute();
         // Close databse connection
         $db = null;

@@ -136,6 +136,19 @@ class HistoryEpisode
         return $req->fetchAll();
     }
 
+    public static function getEpisode($episode, $saison, $media_id): array
+    {
+        // Open database connection
+        $db = init_db();
+        $req = "SELECT * FROM `episode` 
+                WHERE saison = " . $saison . " AND   episode = " . $episode . " AND serie_id =" . $media_id;
+        $req = $db->prepare($req);
+        $req->execute();
+        // Close databse connection
+        $db = null;
+        return $req->fetch();
+    }
+
     /**
      * @param $userId
      * @return array
@@ -182,17 +195,19 @@ class HistoryEpisode
      * Create one history episode
      */
 
-    public static function setHistoryEpisode($user_id, $media_id, $episode_id, $watch_duration)
+    public static function setHistoryEpisode($user_id, $media_id, $episode, $saison, $watch_duration)
     {
 // Open database connection
+        $episode = self::getEpisode($episode, $saison, $media_id);
+        $episode_id = $episode['id'];
+        echo '<p>' . $episode_id . '</p>';
         $db = init_db();
-        $req = "INSERT INTO history_episode (user_id, media_id, episode_id, watch_duration) VALUES
-                (' . $user_id . ',' . $media_id . ',' . $episode_id . ', ' . $watch_duration . ' )";
+        $req = "INSERT INTO history_episode (user_id, media_id,episode_id, watch_duration) VALUES
+                ($user_id ,$media_id , $episode_id , ' $watch_duration ' )";
         $req = $db->prepare($req);
         $req->execute();
         // Close database connection
         $db = null;
-        return $req->fetchAll();
     }
 
     /**
@@ -222,11 +237,12 @@ class HistoryEpisode
      * verif if history for one episode exist
      * if exist whe don't create history we update juste history
      */
-    public static function verifIfExist($userId, $episode_id): bool
+    public static function verifIfExist($userId, $saison, $episode, $media_id): bool
     {
         // Open database connection
+        $episode_id = self::getEpisode($episode, $saison, $media_id);
         $db = init_db();
-        $req = $db->prepare("SELECT * FROM `history_episode` WHERE user_id = " . $userId . " WHERE episode_id =" . $episode_id);
+        $req = $db->prepare("SELECT * FROM `history_episode` WHERE user_id = " . $userId . " AND episode_id =" . $episode_id);
         $req->execute();
         // Close databse connection
         $db = null;
