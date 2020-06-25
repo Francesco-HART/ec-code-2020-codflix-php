@@ -2,9 +2,13 @@
 session_start();
 require_once('../../model/user.php');
 require_once('../../model/historyEpisode.php');
-require_once('../../model/historyMedia.php');
 
-function deleteAll()
+/***************************
+ * ----- Delete one history -----
+ ***************************/
+
+
+function deleteOneEpisode()
 {
     $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : false;
     if ($user_id) {
@@ -13,15 +17,12 @@ function deleteAll()
         if ($user_id == '') {
             return 'Erreur serveur';
         }
+        $id = $_POST['target'];
         echo $_SESSION['user_id'];
-        $historyMedia = HistoryMedia::deleteHistoryMedia($_SESSION['user_id']);
-        $historyEpisode = HistoryEpisode::deleteHistoryEpisode($_SESSION['user_id']);
+        $historyMedia = HistoryEpisode::setHistoriqueEpisode($_POST['user_id'], $_POST['media_id'], $_POST['episode_id'], $_POST['time_start'], $_POST['time_finish'], $_POST['watch_duration']);
     }
 }
 
-echo deleteAll();
-
-
-
+echo deleteOneEpisode();
 
 

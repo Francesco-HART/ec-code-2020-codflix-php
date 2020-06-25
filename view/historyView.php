@@ -13,35 +13,63 @@ require_once('model/historyEpisode.php');
 ?>
 
 <div class="row">
-    <script type="text/javascript" src="jquery-3.2.1.min.js">
-        let isDelete = false
+    <script type="text/javascript">
 
-
-        function handleDeleteOne() {
+        function handleDeleteOneMedia(target) {
             $.ajax({
-                url: "./action/history/deleteAll.php",
-                type: "DELETE",
+                type: "POST",
+                url: "./actions/history/deleteOneMedia.php",
                 cache: false,
+                data: {'target': target.value},
                 success: function (response) {
-                    $('#thenode').html(response);
+                    console.log(response)
+                    window.location.reload()
                 }
             });
+
         }
 
-        function handleDeleteAll() {
-            console.log('hello')
+        function handleDeleteOneEpisode(target) {
+
             $.ajax({
-                url: "./action/history/deleteAll.php",
-                type: "DELETE",
+                type: "POST",
+                url: "./actions/history/deleteOneEpisode.php",
                 cache: false,
+                data: {'target': target.value},
                 success: function (response) {
-                    $('#thenode').html(response);
+                    console.log(response)
+                    window.location.reload()
+                }
+            });
+
+
+        }
+
+
+        function handleDeleteAll() {
+            $.ajax({
+                url: "./actions/history/deleteAll.php",
+                cache: false,
+
+                success: function (response) {
+                    console.log(response)
+
+                    window.location.reload()
+
                 }
             });
         }
 
     </script>
     <button onclick="handleDeleteAll()">delete all</button>
+    <?php
+    foreach ($historyMedia as $saison => $value) {
+        echo '<p>' . $value['title'] . '</p> <input type="button" value= ' . $value['id'] . ' onclick="handleDeleteOneMedia(this)">delete</input>';
+    }
+    foreach ($historyEpisode as $saison => $value) {
+        echo '<p>' . $value['name'] . '</p> <input type="button" value= ' . $value['id'] . ' onclick="handleDeleteOneEpisode(this)">delete</button>';;
+    }
+    ?>
 
 </div>
 

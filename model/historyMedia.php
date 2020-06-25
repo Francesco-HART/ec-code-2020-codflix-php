@@ -121,16 +121,15 @@ class HistoryMedia
         $req->execute();
         // Close database connection
         $db = null;
-
         return $req->fetchAll();
     }
 
 
-    public static function deleteOneHistoryMedia($id, $idMedia)
+    public static function deleteOneHistoryMedia($id, $user_id)
     {
 // Open database connection
         $db = init_db();
-        $req = $db->prepare("SELECT * FROM history_media WHERE id = " . $id . " WHERE id_media = " . $idMedia);
+        $req = $db->prepare("DELETE FROM `history_media` WHERE id = " . $id . " AND  user_id = " . $user_id);
         $req->execute();
         // Close database connection
         $db = null;
@@ -139,19 +138,30 @@ class HistoryMedia
     }
 
 
-    public static function setHistoriqueMedia($user_id, $media_id, $time_start, $time_finish, $watch_duration)
+    public static function setHistoryMedia($user_id, $media_id, $episode_id, $watch_duration)
     {
 // Open database connection
         $db = init_db();
-        $req = "INSERT INTO history_media (user_id, media_id, start_date, finish_date, watch_duration) VALUES
-                (' . $user_id . ', ' . $media_id . ',' . $time_start . ',' . $time_finish . ', ' . $watch_duration . ' )";
-        $req = $db->prepare();
+        $req = "INSERT INTO history_media (user_id, media_id, watch_duration) VALUES
+                (' . $user_id . ',' . $media_id . ', ' . $watch_duration . ' )";
+        $req = $db->prepare($req);
         $req->execute();
         // Close database connection
         $db = null;
         return $req->fetchAll();
     }
 
+    public static function UpdateHistoryMedia($time_start, $time_finish, $watch_duration)
+    {
+// Open database connection
+        $db = init_db();
+        $req = "UPDATE `history_media` SET `time_start`=" . $time_start . ", `time_finish`=" . $time_finish . ", `watch_duration`=" . $watch_duration;
+        $req = $db->prepare($req);
+        $req->execute();
+        // Close database connection
+        $db = null;
+        return $req->fetchAll();
+    }
     public static function verifIfExist($userId, $media_id): bool
     {
         // Open database connection

@@ -1,6 +1,5 @@
 <?php
 ob_start();
-require './model/Tools.php';
 ?>
 <div>
     <button>
@@ -11,4 +10,4 @@ require './model/Tools.php';
 </div>
 <?php $content = ob_get_clean(); ?>
 
-<?php require('contactView.php'); ?>
+<?php require('dashboard.php'); ?>

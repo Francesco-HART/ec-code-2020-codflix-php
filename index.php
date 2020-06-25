@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-</head>
 <?php
 
 require_once('controller/homeController.php');
@@ -47,7 +42,6 @@ if (isset($_GET['action'])):
         case 'contact':
             contactPage();
             break;
-
     endswitch;
 
 else:
@@ -62,4 +56,3 @@ else:
 
 endif;
 ?>
-<html>

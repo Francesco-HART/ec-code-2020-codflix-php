@@ -128,9 +128,11 @@ class HistoryEpisode
 
     public static function deleteHistoryEpisode($userId)
     {
-// Open database connection
+        // Open database connection
         $db = init_db();
-        $req = $db->prepare("DELETE FROM `history_episode` WHERE user_id = " . $userId);
+        $req = "DELETE FROM `history_episode` WHERE user_id = " . $userId;
+        echo $req;
+        $req = $db->prepare($req);
         $req->execute();
         // Close database connection
         $db = null;
@@ -139,11 +141,11 @@ class HistoryEpisode
     }
 
 
-    public static function deleteOneHistoryEpisode($id, $idEpisode)
+    public static function deleteOneHistoryEpisode($id, $user_id)
     {
 // Open database connection
         $db = init_db();
-        $req = $db->prepare("SELECT * FROM history_episode WHERE id = " . $id . " WHERE id_episode = " . $idEpisode);
+        $req = $db->prepare("DELETE  FROM `history_episode` WHERE id = " . $id . " AND user_id = " . $user_id);
         $req->execute();
         // Close database connection
         $db = null;
@@ -151,12 +153,24 @@ class HistoryEpisode
     }
 
 
-    public static function setHistoriqueEpisode($user_id, $media_id, $episode_id, $time_start, $time_finish, $watch_duration)
+    public static function setHistory($user_id, $media_id, $episode_id, $watch_duration)
     {
 // Open database connection
         $db = init_db();
-        $req = "INSERT INTO history_episode (user_id, media_id, episode_id, start_date, finish_date, watch_duration) VALUES
-                (' . $user_id . ',' . $media_id . ',' . $episode_id . ',' . $time_start . ',' . $time_finish . ', ' . $watch_duration . ' )";
+        $req = "INSERT INTO history_episode (user_id, media_id, episode_id, watch_duration) VALUES
+                (' . $user_id . ',' . $media_id . ',' . $episode_id . ', ' . $watch_duration . ' )";
+        $req = $db->prepare($req);
+        $req->execute();
+        // Close database connection
+        $db = null;
+        return $req->fetchAll();
+    }
+
+    public static function UpdateHistory($time_start, $time_finish, $watch_duration)
+    {
+// Open database connection
+        $db = init_db();
+        $req = "UPDATE `history_episode` SET `time_start`=" . $time_start . ", `time_finish`=" . $time_finish . ", `watch_duration`=" . $watch_duration;
         $req = $db->prepare($req);
         $req->execute();
         // Close database connection

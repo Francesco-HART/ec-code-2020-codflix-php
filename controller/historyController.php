@@ -10,19 +10,15 @@ require_once('model/historyEpisode.php');
 
 function historyPage()
 {
-
     $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : false;
     if ($user_id) {
         $historyMedia = HistoryMedia::getHistoryMediaById($user_id);
         $historyEpisode = HistoryEpisode::getHistoryEpisodeById($user_id);
+        echo '<p>' . $user_id . '</p>';
         foreach ($historyMedia as $saison => $value) {
-            echo '<p>' . $value['id'] . '</p>';
+            echo '<p>' . $value['media_id'] . '</p>';
         }
-        foreach ($historyEpisode as $saison => $value) {
-            echo '<p>yooo</p>';
 
-            echo '<p>' . $value['id'] . '</p>';
-        }
         require('view/historyView.php');
     }
 }

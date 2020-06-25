@@ -6,7 +6,8 @@
 
     <link href="public/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="public/lib/font-awesome/css/all.min.css" rel="stylesheet"/>
-
+    <script src="public/lib/jquery/js/jquery-3.5.0.min"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <link href="public/css/partials/partials.css" rel="stylesheet"/>
     <link href="public/css/layout/layout.css" rel="stylesheet"/>
 </head>
@@ -18,22 +19,49 @@
         <h2 class="title">Bienvenue</h2>
         <div class="sidebar-menu">
             <ul>
+                <?php
+                if (isset($_SESSION["user_id"])) {
+                    if (isset($_GET["action"]) && $_GET["action"] === "media") {
+                        echo "<li class=\"active\"><a href=\"index.php?action=media\">Médias</a></li>";
+                    } else {
+                        echo "<li><a href=\"index.php?action=media\">Médias</a></li>";
+                    }
 
-                <li class=<?= (isset($_GET['action'])) && $_GET['action'] === "media" ? 'active' : '' ?>><a
-                            href="index.php?action=media">Médias</a>
-                </li>
+                    if (isset($_GET["action"]) && $_GET["action"] === "history") {
+                        echo "<li class=\"active\"><a href=\"index.php?action=history\">Historique</a></li>";
+                    } else {
+                        echo "<li><a href=\"index.php?action=history\">Historique</a></li>";
+                    }
 
-                <li class=<?= (isset($_GET['action'])) && $_GET['action'] === "contact" ? 'active' : '' ?>><a
-                            href="index.php?action=contact">
-                        Nous
-                        contacter</a></li>
-                <li class=<?= (isset($_GET['action'])) && $_GET['action'] === "history" ? 'active' : '' ?>><a
-                            href="index.php?action=history">Historique</a>
-                </li>
-                </li>
-                <li class=<?= (isset($_GET['action'])) && $_GET['action'] === "logout" ? 'active' : '' ?>><a
-                            href="index.php?action=logout">Me
-                        déconnecter</a></li>
+                    if (isset($_GET["action"]) && $_GET["action"] === "contact") {
+                        echo "<li class=\"active\"><a href=\"index.php?action=contact\">Nous contacter</a></li>";
+                    } else {
+                        echo "<li><a href=\"index.php?action=contact\">Nous contacter</a></li>";
+                    }
+
+                    if (isset($_GET["action"]) && $_GET["action"] === "logout") {
+                        echo "<li class=\"active\"><a href=\"index.php?action=logout\">Deconnexion</a></li>";
+                    } else {
+                        echo "<li><a href=\"index.php?action=logout\">Deconnexion</a></li>";
+                    }
+                } else {
+                    if (isset($_GET["action"]) && $_GET["action"] === "login") {
+                        echo "<li class=\"active\"><a href=\"index.php?action=login\">Connexion</a></li>";
+                    } else {
+                        echo "<li><a href=\"index.php?action=login\">Connexion</a></li>";
+                    }
+                    if (isset($_GET["action"]) && $_GET["action"] === "contact") {
+                        echo "<li class=\"active\"><a href=\"index.php?action=contact\">Nous contacter</a></li>";
+                    } else {
+                        echo "<li><a href=\"index.php?action=contact\">Nous contacter</a></li>";
+                    }
+                    if (isset($_GET["action"]) && $_GET["action"] === "signup") {
+                        echo "<li class=\"active\"><a href=\"index.php?action=signup\">Inscription</a></li>";
+                    } else {
+                        echo "<li><a href=\"index.php?action=signup\">Inscription</a></li>";
+                    }
+                }
+                ?>
             </ul>
         </div>
     </nav>
